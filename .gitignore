@@ -1,0 +1,17 @@
+.secrets/
+*.env
+.env
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.venv/
+venv/
+*.log
+node_modules/
+.idea/
+.vscode/
+*.swp
+.cache/
+output/
+dist/

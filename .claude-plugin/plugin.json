@@ -1,0 +1,19 @@
+{
+  "name": "google-ads",
+  "version": "0.1.0",
+  "description": "Comprehensive Google Ads management plugin: read, edit, report, audit and optimize Google Ads accounts via Claude Code. Covers OAuth setup, GAQL data queries, campaign/ad/keyword/budget mutations, performance reporting, bulk operations, recommendations, and change history.",
+  "author": {
+    "name": "promogen-glitchcz",
+    "url": "https://github.com/promogen-glitchcz"
+  },
+  "homepage": "https://github.com/promogen-glitchcz/google-ads-plugin",
+  "keywords": [
+    "google-ads",
+    "ppc",
+    "advertising",
+    "marketing",
+    "gaql",
+    "reporting",
+    "campaign-management"
+  ]
+}
