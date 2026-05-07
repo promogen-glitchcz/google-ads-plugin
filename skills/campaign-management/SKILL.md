@@ -1,11 +1,17 @@
 ---
 name: campaign-management
-description: Create, pause, resume, rename, edit and remove Google Ads campaigns. Use whenever the user wants to "create a campaign", "pause campaign X", "enable campaign", "rename campaign", "change campaign status", "delete a campaign", "change advertising channel", "add a campaign for X". Also handles campaign-level settings like network targeting, geo, language, ad rotation, ad schedule. For budget changes use budget-bidding skill; for keywords use keyword-operations.
+description: Pause, resume, rename, edit and remove Google Ads campaigns; manage campaign-level settings (network targeting, geo, language, ad rotation, ad schedule). For CREATING a NEW campaign, hand off to the channel-specific guided wizards - pmax-campaign-builder for PMax, search-campaign-builder for Search. Use this skill for "pause campaign X", "enable campaign", "rename campaign", "change network settings", "add geo X to campaign Y", "change campaign status". For budget changes use budget-bidding; for keywords use keyword-operations.
 ---
 
 # Campaign management
 
-Mutate campaigns: create new, change status, edit settings.
+Edit existing campaigns and their settings. **For creating NEW campaigns, ALWAYS use the guided wizards** - they interview the user and prevent missing required fields:
+
+- **Performance Max** -> [pmax-campaign-builder](../pmax-campaign-builder/SKILL.md)
+- **Search** -> [search-campaign-builder](../search-campaign-builder/SKILL.md)
+- **Other channels** (Display, Demand Gen, Video, Shopping): no dedicated wizard yet - interview the user manually using the same pattern (basics → goal → bidding → assets → preview → validate-only → apply).
+
+**Never assume defaults silently.** Ask the user, propose defaults, let them confirm.
 
 ## Always-do safety checklist
 
@@ -104,13 +110,7 @@ The negative resource name (`-1`) is a temporary ID - the second op references t
 
 ### Create a Performance Max campaign
 
-PMax is more involved - it needs a campaign + asset_group + assets + final URL expansion. Use the script:
-
-```bash
-python3 scripts/create_pmax.py --customer CUSTOMER_ID --name "PMax test" --budget 100 \
-  --final-url https://example.com \
-  --headlines "H1|H2|H3" --descriptions "D1|D2"
-```
+For PMax always use the guided wizard: [pmax-campaign-builder](../pmax-campaign-builder/SKILL.md). It walks the user through asset groups, headlines, images, audience signals, listing groups, etc. - all the things you'd otherwise miss.
 
 ### Edit network targeting
 

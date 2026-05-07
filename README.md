@@ -160,14 +160,18 @@ Each skill has a `SKILL.md` that tells Claude when to use it and how. Claude pic
 | oauth-setup | first-time setup, fixing 401 errors, refresh token expired |
 | account-explorer | "what accounts can I see", picking which customer to operate on |
 | data-query | any read - metrics, lists, performance, trends |
-| campaign-management | create/pause/edit/remove campaigns, networks, geo, language |
+| **pmax-campaign-builder** | guided PMax creation - interviews you for assets, signals, listing groups |
+| **search-campaign-builder** | guided Search creation - ad groups, RSAs, keywords, extensions |
+| campaign-management | pause/resume/edit existing campaigns, network/geo/language/schedule |
 | keyword-operations | add/pause/remove keywords, negatives, search-term mining |
-| ad-management | RSA creation, PMax assets, sitelinks, callouts, policy review |
+| ad-management | RSA creation, asset uploads, sitelinks, callouts, policy review |
 | budget-bidding | budget changes, bidding strategy switches, pacing |
 | performance-reporting | KPI reports, dashboards, MoM comparison, anomalies |
 | bulk-operations | CSV-driven mass edits, batch operations |
 | audit-and-recommendations | structural audit, Google's recommendations, apply/dismiss |
 | change-history | who-changed-what, audit log, risky recent changes |
+
+**Building a new campaign?** Always use the guided wizard skills (`pmax-campaign-builder`, `search-campaign-builder`). They interview you for every field PMax/Search needs - assets, signals, ad groups, keywords, extensions, conversion goals, geo, schedule - then preview the full plan and validate before sending. No silent defaults.
 
 ## Reference docs
 
