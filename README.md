@@ -1,8 +1,10 @@
-# Google Ads Plugin for Claude Code
+# Google Ads Plugin for Claude
 
-Comprehensive Google Ads management plugin: read, edit, report, audit and optimize Google Ads accounts via Claude. Covers OAuth setup, GAQL queries, all common mutations (campaigns, ad groups, keywords, ads, budgets, bidding), performance reporting, recommendations, and change history.
+Comprehensive Google Ads management plugin: read, edit, report, audit and optimize Google Ads accounts via any Claude surface (Claude Code, Claude Desktop, Cursor, claude.ai web with Custom Connector). Covers OAuth setup, GAQL queries, all common mutations (campaigns, ad groups, keywords, ads, budgets, bidding), performance reporting, recommendations, and change history.
 
-Built for Claude Code's plugin system. Once installed, just talk to Claude in plain language - "what accounts do I have?", "show me wasted spend last month", "pause campaign X", "build me a dashboard".
+**Independent of where Claude runs**: works as a Claude Code plugin (skills auto-load) AND as an MCP server (`server/mcp_server.py`) that any MCP-compatible client can spawn. Same backing code in `lib/`, two delivery channels.
+
+Once installed, talk to Claude in plain language - "what accounts do I have?", "show me wasted spend last month", "pause campaign X", "build me a dashboard".
 
 ## Quick start
 
@@ -11,22 +13,55 @@ Built for Claude Code's plugin system. Once installed, just talk to Claude in pl
 git clone https://github.com/promogen-glitchcz/google-ads-plugin.git
 cd google-ads-plugin
 
-# 2. Set credentials
+# 2. Install MCP SDK (only if you want the MCP server; the CLI scripts have no deps)
+pip3 install --break-system-packages mcp
+
+# 3. Set credentials
 cp .secrets/.env.example .secrets/.env
 # edit .secrets/.env with your client_id, client_secret, developer_token
 
-# 3. Generate refresh token (one-time)
+# 4. Generate refresh token (one-time)
 python3 scripts/oauth_setup.py
-# - opens browser
-# - sign in with the Google account that has Google Ads access
-# - click Allow
-# - refresh token is saved
+# - opens browser, sign in with the Google account that has Google Ads access
+# - click Allow → refresh token saved automatically
 
-# 4. Verify
+# 5. Verify
 python3 scripts/list_accounts.py
 ```
 
-If `list_accounts.py` prints your customer IDs, you're done. Now ask Claude.
+If `list_accounts.py` prints your customer IDs, you're done. Now configure your client (below) and ask Claude.
+
+## Use it from any Claude client
+
+### Claude Code (terminal, on this Mac)
+The plugin is auto-discovered when Claude Code is started inside the repo. Skills load automatically.
+
+```bash
+cd google-ads-plugin
+claude   # or your shell alias
+```
+
+### Claude Desktop (MCP)
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "google-ads": {
+      "command": "python3",
+      "args": ["/absolute/path/to/google-ads-plugin/server/mcp_server.py"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop. The 13 Google Ads tools will appear in the tool picker.
+
+### Cursor / other MCP clients
+Same idea - point the client at `server/mcp_server.py` as a stdio MCP server.
+
+### claude.ai web (Cowork)
+Custom Connectors require a remote (HTTP) MCP endpoint. To use this plugin from the web, deploy `server/mcp_server.py` behind an authenticated HTTPS endpoint (Cloud Run / Fly.io / Railway / your VPS). Not in scope of the basic install.
 
 ## What you can do
 
@@ -59,28 +94,30 @@ If `list_accounts.py` prints your customer IDs, you're done. Now ask Claude.
 
 ```
 google-ads-plugin/
-├── .claude-plugin/plugin.json    plugin manifest
+├── .claude-plugin/plugin.json    plugin manifest (Claude Code)
 ├── .secrets/.env                 credentials (gitignored)
-├── lib/                          shared Python helpers
+├── lib/                          shared Python helpers (used by both CLI and MCP)
 │   ├── env.py                    .env loader
 │   ├── auth.py                   OAuth refresh
 │   ├── client.py                 GAQL search + mutate
 │   ├── format.py                 markdown / CSV / summaries
 │   └── errors.py                 friendly error explanations
+├── server/
+│   └── mcp_server.py             MCP server (13 tools) - works in Claude Desktop, Cursor, etc.
 ├── scripts/                      runnable CLI tools
 │   ├── oauth_setup.py            one-time OAuth wizard
 │   ├── list_accounts.py          discover accessible accounts
 │   ├── account_overview.py       one-page account summary
 │   ├── run_gaql.py               run any GAQL query
 │   └── audit_account.py          structural audit
-├── reference/                    reference docs Claude reads
+├── reference/                    reference docs both Claude and MCP can read
 │   ├── api-overview.md           versioning, headers, endpoints
 │   ├── gaql-cookbook.md          50+ ready GAQL queries
 │   ├── resources-catalog.md      all resources + their fields
 │   ├── mutations-guide.md        full write/update/remove reference
 │   ├── errors-handbook.md        every error with cause + fix
 │   └── reporting-patterns.md     KPIs, anomalies, dashboards
-└── skills/                       Claude Code skills
+└── skills/                       Claude Code skills (auto-load when in dir)
     ├── oauth-setup/
     ├── account-explorer/
     ├── data-query/
@@ -93,6 +130,26 @@ google-ads-plugin/
     ├── audit-and-recommendations/
     └── change-history/
 ```
+
+## MCP server tools (13)
+
+| tool | purpose |
+|---|---|
+| `check_credentials` | verify OAuth + access |
+| `list_accounts` | accessible customers (with optional MCC tree) |
+| `get_account_overview` | one-page summary, currency, top campaigns |
+| `run_gaql` | any GAQL query, table/csv/json output |
+| `list_campaigns` | campaign list with last-N-days metrics |
+| `audit_account` | budget/disapproved/wasted/QS check |
+| `get_change_history` | recent change events |
+| `list_recommendations` | open Google recommendations |
+| `set_campaign_status` | pause/enable/remove (validate-first) |
+| `update_campaign_budget` | change daily budget (validate-first) |
+| `add_negative_keywords` | bulk negatives at ad-group or campaign level |
+| `add_positive_keywords` | bulk positive keywords to an ad group |
+| `mutate_raw` | escape hatch for any mutation; use the typed tools first |
+
+All mutations default to `validate_only=True` for safety.
 
 ## Skills
 
