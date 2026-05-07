@@ -9,176 +9,176 @@ Same principle as PMax builder: interview, validate, preview, then send.
 
 ## Conversation rules
 
-1. Slovak/Czech if they wrote in SK/CZ.
-2. One phase per message.
-3. Show defaults; "default" lets them skip.
-4. Validate as you go (RSA limits, char counts).
-5. Preview full plan before validate.
-6. Default to PAUSED.
+1. **Mluv s uživatelem ČESKY** (ne slovensky). Otázky, návrhy, errory - vše v češtině. Technické bloky (Python, JSON) zůstávají anglicky.
+2. Jedna fáze = jedna zpráva.
+3. Defaults ukazuj jasně; "default" znamená skip.
+4. Validuj průběžně (RSA limity, počty znaků).
+5. Preview celého plánu před validate.
+6. Defaultně PAUSED.
 
 ---
 
 ## PHASE 0 - Pre-flight
 
-- Check credentials, list accounts.
-- Ask which customer + login_customer_id (if MCC).
+- Spusť `check_credentials`, vypiš dostupné účty.
+- Zeptej se který customer + login_customer_id (pokud MCC).
 
-## PHASE 1 - Goal & basics
+## PHASE 1 - Cíl & základy
 
 ```
-1. NÁZOV kampane (napr. "SEA | Brand | CZ")
-2. CIEĽ:
+1. NÁZEV kampaně (např. "SEA | Brand | CZ")
+2. CÍL:
    - traffic? maximize_clicks (target_spend)
-   - prevalený? maximize_conversions (s/bez tCPA)
+   - prodej? maximize_conversions (s/bez tCPA)
    - tržby? maximize_conversion_value (s/bez tROAS)
-   - manuálna kontrola? manual_cpc
-3. ROZPOČET denný (CZK/EUR/...)
-4. KRAJINA + jazyk
+   - manuální kontrola? manual_cpc
+3. ROZPOČET denní (Kč/EUR/...)
+4. ZEMĚ + jazyk
 5. NETWORK SETTINGS:
    - target_google_search: ON (default ON)
-   - target_search_network (search partners): ON/OFF (default OFF, partneri sú často slabší)
-   - target_content_network: OFF (display, vypnúť pre čistú search)
+   - target_search_network (search partners): ON/OFF (default OFF, partneři jsou často slabší)
+   - target_content_network: OFF (display, vypnout pro čistou search)
    - target_partner_search_network: OFF (default)
-6. AD ROTATION: optimize / rotate_indefinitely (default optimize - Google si vyberie najlepší ad)
-7. ŠTART/KONIEC: dátumy alebo ihneď + bez konca
+6. AD ROTATION: optimize / rotate_indefinitely (default optimize - Google si vybere nejlepší ad)
+7. START/KONEC: data nebo ihned + bez konce
 8. STATUS: PAUSED (default)
 ```
 
-## PHASE 2 - Conversion goals
+## PHASE 2 - Konverzní cíle
 
-Same as PMax PHASE 2.
+Stejné jako PMax PHASE 2 (všechny primary konverze účtu nebo konkrétní výběr - jen v češtině).
 
-## PHASE 3 - Ad group structure
+## PHASE 3 - Struktura ad groups
 
 ```
-SEA potrebuje LOGICKÚ STRUKTÚRU. Najlepšie ad groups = jedna téma = priliehavé ads.
+SEA potřebuje LOGICKOU STRUKTURU. Nejlepší ad groups = jedno téma = přiléhavé ads.
 
-PRÍKLADY pre eshop "Trenky":
-A) Brand-kategórie:
+PŘÍKLADY pro e-shop "Trenky":
+A) Brand-kategorie:
    AG "Calvin Klein - trenky"
    AG "Tommy Hilfiger - boxerky"
    AG "Hugo Boss - prádlo"
 
-B) Generic-kategórie:
+B) Generic-kategorie:
    AG "Pánské trenky generic"
    AG "Pánské boxerky generic"
-   AG "Trenky zľava"
+   AG "Trenky sleva"
 
-C) Brand defense (keď je kampaň Brand):
+C) Brand defense (když je kampaň Brand):
    AG "Trenýrkárna brand"
    AG "Trenýrkárna kontakt"
 
-Aké ad groups by si chcel? (alebo nech ti navrhnem na základe URL/produktov)
+Jaké ad groups bys chtěl? (nebo ať ti navrhnu na základě URL/produktů)
 ```
 
-For each ad group, run phases 4-6.
+Pro každou ad group projdi fáze 4-6.
 
-## PHASE 4 - Ad group basics (per ad group)
+## PHASE 4 - Ad group základy (pro každou ad group)
 
 ```
-1. NÁZOV ad group
-2. DEFAULT BID (cpc_bid_micros) - relevantné len pri MANUAL_CPC; pri smart bidding ignorované
-3. TARGET CPA / TARGET ROAS override (volitelne, ad-group level)
+1. NÁZEV ad group
+2. DEFAULT BID (cpc_bid_micros) - relevantní jen při MANUAL_CPC; při smart bidding ignorováno
+3. TARGET CPA / TARGET ROAS override (volitelně, ad-group level)
 4. TYPE: SEARCH_STANDARD (default)
 ```
 
-## PHASE 5 - Keywords (per ad group)
+## PHASE 5 - Keywords (pro každou ad group)
 
 ```
-KEYWORDS pre tento ad group:
+KEYWORDS pro tuhle ad group:
 
-1. Match types do akých:
-   A) iba EXACT [precízny match]
-   B) iba PHRASE "fráza match"
-   C) iba BROAD široký match (vyžaduje smart bidding)
-   D) mix - poviem ktoré sú EXACT, ktoré PHRASE
+1. Match types jaké:
+   A) jen EXACT [přesný match]
+   B) jen PHRASE "frázový match"
+   C) jen BROAD široký match (vyžaduje smart bidding)
+   D) mix - řeknu které jsou EXACT, které PHRASE
 
-2. Pošli zoznam keywords (po jednom na riadok), napr:
-   pánske trenky calvin klein  EXACT
+2. Pošli seznam keywords (po jednom na řádek), např:
+   pánské trenky calvin klein  EXACT
    calvin klein trenky          PHRASE
    trenky ck                    EXACT
-   ck boxerky muzske            EXACT
+   ck boxerky panske            EXACT
 
-   alebo len text - ja sa spýtam na match types
+   nebo jen text - já se zeptám na match types
 
 3. NEGATIVE KEYWORDS (ad group level):
-   napr. "zadarmo", "free", "ako vyrobiť"
+   např. "zdarma", "free", "jak vyrobit"
    (campaign-level negatives nastavíme zvlášť - PHASE 7)
 
-4. INITIAL BIDS (ak manual_cpc):
+4. INITIAL BIDS (pokud manual_cpc):
    - default ad group bid = X
-   - alebo per-keyword bid override
+   - nebo per-keyword bid override
 ```
 
-Validate: warn if BROAD without smart bidding, if no keywords, if very long phrases.
+Validuj: varuj při BROAD bez smart bidding, při žádných keywords, při velmi dlouhých frázích.
 
-## PHASE 6 - RSA ads (per ad group)
+## PHASE 6 - RSA ads (pro každou ad group)
 
 ```
-RESPONSIVE SEARCH AD pre tento ad group.
+RESPONSIVE SEARCH AD pro tuhle ad group.
 
 Limity:
-- HEADLINES: 3-15, max 30 chars každý (min 3 nutné, ideál 10+)
-- DESCRIPTIONS: 2-4, max 90 chars (min 2 nutné, ideál 4)
-- PATH1, PATH2: max 15 chars každý (zobrazia sa v URL)
-- FINAL URLS: 1+ (kde má reklama smerovať; všetky musia mať rovnaký doména)
-- PINNING: optional, na pozíciu HEADLINE_1/2/3 alebo DESC_1/2 (zhoršuje performance, použiť len ak musí - legal/brand)
+- HEADLINES: 3-15, max 30 znaků každý (min 3 nutné, ideál 10+)
+- DESCRIPTIONS: 2-4, max 90 znaků (min 2 nutné, ideál 4)
+- PATH1, PATH2: max 15 znaků každý (zobrazí se v URL)
+- FINAL URLS: 1+ (kam má reklama směřovat; všechny musí mít stejnou doménu)
+- PINNING: volitelné, na pozici HEADLINE_1/2/3 nebo DESC_1/2 (zhoršuje performance, použít jen pokud musíš - legal/brand)
 
-HEADLINES (5-15 ks, max 30 chars):
-napr.
+HEADLINES (5-15 ks, max 30 znaků):
+např.
 - "Calvin Klein Trenky Online"
-- "Akcia až -50%"
+- "Akce až -50%"
 - "Doprava ZDARMA od 1000 Kč"
 - ...
 
-DESCRIPTIONS (2-4 ks, max 90 chars):
-napr.
-- "Originálne Calvin Klein boxerky a trenky. Doprava zdarma od 1000 Kč."
-- "Skladom v Prahe, expedícia do 24h. 30-dní vrátenie zadarmo."
+DESCRIPTIONS (2-4 ks, max 90 znaků):
+např.
+- "Originální Calvin Klein boxerky a trenky. Doprava zdarma od 1000 Kč."
+- "Skladem v Praze, expedice do 24 h. 30 dní na vrácení zdarma."
 
-PATH1: napr. "trenky"
-PATH2: napr. "calvin-klein"
+PATH1: např. "trenky"
+PATH2: např. "calvin-klein"
 
 FINAL URL: https://trenyrkarna.cz/calvin-klein
 
-CHCEŠ POUŽIŤ PINNING? (default NIE)
+CHCEŠ POUŽÍT PINNING? (default NE)
 ```
 
-Validate every headline/description char count. Reject and propose shorter.
+Validuj počet znaků každého headline/description. Odmítni a navrhni kratší.
 
-Compute `ad_strength` heuristic: count distinct words across headlines, warn if <30 unique words.
+Spočítej `ad_strength` heuristiku: počet unikátních slov napříč headlines, varuj pokud <30 unikátních slov.
 
 ## PHASE 7 - Campaign-level negatives + ad extensions
 
 ```
 CAMPAIGN-LEVEL NEGATIVES:
-- napr. "zadarmo", "návod", "torrent", "porn" (často general blocklist)
-- pošli zoznam s match types
+- např. "zdarma", "návod", "torrent", "porn" (často obecný blocklist)
+- pošli seznam s match types
 
 EXTENSIONS / ASSETS (ad-level + campaign-level):
-1. SITELINKS (4+ odporúčané): napr. "Doprava", "Kontakt", "Akcie", "O nás"
-   pre každý: link text (max 25), description1 (max 35), description2 (max 35), final_url
-2. CALLOUTS (4+ odporúčané): napr. "Doprava zdarma", "30-dní vrátenie" (max 25 chars)
-3. STRUCTURED SNIPPETS: header (z fixného zoznamu) + values
-   napr. header="Brands", values=["Calvin Klein", "Tommy", "Boss"]
-4. CALL extension: telefón
-5. PROMOTION asset: zľavy
+1. SITELINKS (4+ doporučené): např. "Doprava", "Kontakt", "Akce", "O nás"
+   pro každý: link text (max 25), description1 (max 35), description2 (max 35), final_url
+2. CALLOUTS (4+ doporučené): např. "Doprava zdarma", "30 dní na vrácení" (max 25 znaků)
+3. STRUCTURED SNIPPETS: header (z fixního seznamu) + values
+   např. header="Brands", values=["Calvin Klein", "Tommy", "Boss"]
+4. CALL extension: telefon
+5. PROMOTION asset: slevy
 6. PRICE asset: cenové bloky
-7. LEAD FORM: ak chcete leady priamo z reklamy
+7. LEAD FORM: pokud chcete leady přímo z reklamy
 
-Iba SITELINKS + CALLOUTS sú must-have. Ostatné podľa potreby.
+Pouze SITELINKS + CALLOUTS jsou must-have. Ostatní podle potřeby.
 ```
 
 ## PHASE 8 - Geo & schedule
 
 ```
 GEO:
-- Krajina (z PHASE 1)
-- Konkrétne mestá / regióny include / exclude?
-- Targeting type: PRESENCE (kto je tam) vs PRESENCE_OR_INTEREST (default; aj kto sa zaujíma)
+- Země (z PHASE 1)
+- Konkrétní města / regiony include / exclude?
+- Targeting type: PRESENCE (kdo je tam) vs PRESENCE_OR_INTEREST (default; i kdo se zajímá)
 
 SCHEDULE:
-- 24/7 alebo iba určité dni/hodiny?
+- 24/7 nebo jen určité dny/hodiny?
 - Ad rotation: optimize (default) / rotate_indefinitely
 ```
 
@@ -192,14 +192,14 @@ Campaign:
   channel: SEARCH
   status: PAUSED
   bidding: target_roas, target=4.0
-  budget: 200 CZK/day STANDARD
+  budget: 200 Kč/den STANDARD
   network: google_search ON, search_partners OFF, content OFF
   geo: CZ
   language: CZ
-  start: ihneď, end: žiadny
+  start: ihned, end: žádný
 
 Ad Groups (3):
-  1. "Calvin Klein - trenky" (default_cpc 5 CZK)
+  1. "Calvin Klein - trenky" (default_cpc 5 Kč)
      keywords: 12 (8 EXACT, 4 PHRASE)
      negatives: 3 ad-group level
      RSA: 11 headlines, 4 descriptions, paths trenky/calvin-klein
@@ -209,7 +209,7 @@ Ad Groups (3):
 
 Campaign-level:
   negative keywords: 8 (zdarma, návod, torrent, ...)
-  sitelinks: 4 (Doprava, Akcie, Kontakt, O nás)
+  sitelinks: 4 (Doprava, Akce, Kontakt, O nás)
   callouts: 5
 
 Spustím VALIDATE-ONLY?
@@ -220,10 +220,10 @@ Spustím VALIDATE-ONLY?
 ```
 ✅ Validate OK.
 
-Vytvorím TERAZ?
+Vytvořím TEĎ?
 - Kampaň bude PAUSED
-- Po vytvorení dostaneš resource names všetkých entít
-- Aktivuj manuálne po overení
+- Po vytvoření dostaneš resource names všech entit
+- Aktivuj ručně po ověření
 ```
 
 ## Build pattern (technical)
@@ -302,12 +302,12 @@ c.mutate_batch(cid, mutate_ops, validate_only=True)
 
 ## Common pitfalls
 
-- **BROAD match without smart bidding** = waste. Buď ohraničiť na PHRASE/EXACT pri manual_cpc, alebo prepnúť na maximize_conversions.
-- **Žiadne negatives** = každý SEA má aspoň 5 negatives od štartu (napr. "zdarma", "free", "návod").
-- **Príliš málo headlines/descriptions** = horšia performance. Odporúčam 10+ headlines, 4 descriptions.
-- **Pinning na všetko** = stratíte výhody RSA. Pinujte iba ak musíte (legal copy).
-- **Nezvolené konverzie** = bidding nemá na čo optimalizovať.
-- **Štart ENABLED** = NIE. PAUSED, over, enable.
+- **BROAD match bez smart bidding** = waste. Buď omezit na PHRASE/EXACT při manual_cpc, nebo přepnout na maximize_conversions.
+- **Žádné negatives** = každý SEA má aspoň 5 negatives od startu (např. "zdarma", "free", "návod").
+- **Příliš málo headlines/descriptions** = horší performance. Doporučuju 10+ headlines, 4 descriptions.
+- **Pinning na všechno** = ztratíš výhody RSA. Pinuj jen pokud musíš (legal copy).
+- **Nezvolené konverze** = bidding nemá na co optimalizovat.
+- **Start ENABLED** = NE. PAUSED, ověř, enable.
 
 ## Reference
 - [reference/mutations-guide.md](../../reference/mutations-guide.md)
